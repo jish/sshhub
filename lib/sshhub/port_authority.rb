@@ -2,9 +2,7 @@ module Sshhub
   class PortAuthority
     def self.authorize(key)
       system('mkdir', '-p', "/Users/#{whoami}/.ssh")
-      File.open(filename, 'a') do |file|
-        file.write("#{key}\n")
-      end
+      File.open(filename, 'a'){|f| f.write("#{key}\n") }
     end
 
     private

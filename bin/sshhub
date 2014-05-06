@@ -5,22 +5,20 @@ require 'sshhub'
 class SshhubCommand < Thor
   include Thor::Actions
 
-  desc "authorize USERNAME", "Add the specified username's key to your authorized_keys file"
+  desc "authorize USERNAME", "Add keys from a github username to your authorized_keys file"
   def authorize(username)
+    say "Requesting keys for #{username}...\n"
     keychain = Sshhub::Keychain.new(username)
-    return [keychain.keys.first] if keychain.keys.length == 1
-    say "#{keychain.keys.length} keys found for #{username}:\n"
+    keys = keychain.length == 1 ? [keychain.keys.first] : key_selection(keychain.keys)
 
-    keys = key_selection(keychain.keys)
-    keys.each do |key|
-      Sshhub::PortAuthority.authorize(key)
-    end
-    say "\n#{keys.length} keys added to authorized_keys"
+    keys.each{|key| Sshhub::PortAuthority.authorize(key) }
+    print_report(keys)
   end
 
   private
 
   def key_selection(keys)
+    say "#{keys.length} keys found:\n"
     i = 0
     keys.each do |key|
       i += 1
@@ -31,6 +29,16 @@ class SshhubCommand < Thor
     return [] if pos == ''
 
     pos.to_i.zero? ? keys : [keys[pos.to_i - 1]]
+  end
+
+  def print_report(keys)
+    if keys.length == 0
+      say "No keys authorized"
+    elsif keys.length == 1
+      say "Added #{keys.first.abridged} to authorized_keys"
+    else
+      say "Added #{keys.length} keys to authorized_keys"
+    end
   end
 end
 

@@ -12,6 +12,10 @@ module Sshhub
       @keys ||= api_data.map{|key| Sshhub::Key.new(key) }
     end
 
+    def length
+      keys.length
+    end
+
     private
 
     def api_data

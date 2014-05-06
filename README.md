@@ -1,24 +1,23 @@
 # Sshhub
 
-TODO: Write a gem description
+sshhub is an easy way to authorize the keys of a github user on your machine.
+
+````
+$ sshhub authorize mwerner
+Requesting keys for mwerner...
+2 keys found:
+ 1)  ssh-rsa AAAAB3Nz ... 0QkUi8N3GtW8bWt
+ 2)  ssh-dss AAAAB3Nz ... voG4UfVujCJdkh=
+ A)  Authorize all keys
+
+Select a key to authorize: 2
+Added ssh-rsa AAAAB3Nz ... voG4UfVujCJdkh= to authorized_keys
+$
+````
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'sshhub'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
     $ gem install sshhub
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 

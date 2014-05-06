@@ -9,7 +9,7 @@ module Sshhub
     end
 
     def keys
-      api_data.map{|key| Sshhub::Key.new(key) }
+      @keys ||= api_data.map{|key| Sshhub::Key.new(key) }
     end
 
     private

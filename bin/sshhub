@@ -1,5 +1,37 @@
 #!/usr/bin/env ruby
+require 'thor'
 require 'sshhub'
 
-keychain = Sshhub::Keychain.new('mwerner')
-puts keychain.keys.first
+class SshhubCommand < Thor
+  include Thor::Actions
+
+  desc "authorize USERNAME", "Add the specified username's key to your authorized_keys file"
+  def authorize(username)
+    keychain = Sshhub::Keychain.new(username)
+    return [keychain.keys.first] if keychain.keys.length == 1
+    say "#{keychain.keys.length} keys found for #{username}:\n"
+
+    keys = key_selection(keychain.keys)
+    keys.each do |key|
+      Sshhub::PortAuthority.authorize(key)
+    end
+    say "\n#{keys.length} keys added to authorized_keys"
+  end
+
+  private
+
+  def key_selection(keys)
+    i = 0
+    keys.each do |key|
+      i += 1
+      printf(" %-3s %5s\n" % ["#{i})", key.abridged])
+    end
+    printf(" %-3s %5s\n" % ['A)', 'Authorize all keys'])
+    pos = ask("\nSelect a key to authorize:")
+    return [] if pos == ''
+
+    pos.to_i.zero? ? keys : [keys[pos.to_i - 1]]
+  end
+end
+
+SshhubCommand.start

@@ -6,6 +6,10 @@ module Sshhub
       @key = options[:key]
     end
 
+    def abridged
+      "#{key[0..15]} ... #{key[(key.length - 15)..-1]}"
+    end
+
     def to_s
       key
     end

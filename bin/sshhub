@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'sshhub'
+
+keychain = Sshhub::Keychain.new('mwerner')
+puts keychain.keys.first

@@ -1,4 +1,4 @@
-# Sshhub
+# sshhub
 
 sshhub is an easy way to authorize the keys of a github user on your machine.
 

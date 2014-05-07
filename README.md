@@ -15,6 +15,9 @@ Added ssh-rsa AAAAB3Nz ... voG4UfVujCJdkh= to authorized_keys
 $
 ````
 
+
+[![Code Climate](https://codeclimate.com/github/mwerner/sshhub.png)](https://codeclimate.com/github/mwerner/sshhub)
+
 ## Installation
 
     $ gem install sshhub

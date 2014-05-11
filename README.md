@@ -12,7 +12,21 @@ Requesting keys for mwerner...
 
 Select a key to authorize: 2
 Added ssh-rsa AAAAB3Nz ... voG4UfVujCJdkh= to authorized_keys
-$
+````
+
+````
+$ sshhub status mwerner
+Requesting keys for mwerner...
+2 keys found:
+ ssh-rsa AAAAB3Nz ... 0QkUi8N3GtW8bWt
+ ssh-dss AAAAB3Nz ... voG4UfVujCJdkh=
+
+mwerner is authorized on this machine
+````
+
+````
+$ sshhub revoke mwerner
+Revoking all authorization for mwerner...
 ````
 
 ## Installation

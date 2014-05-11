@@ -20,5 +20,17 @@ describe Sshhub::Keychain do
       Octokit::Client.any_instance.should_receive(:user_keys).and_return([{id: 1, key: 'abc'}])
       expect(keychain.length).to eq(1)
     end
+
+    it 'knows the multitude of keys' do
+      Octokit::Client.any_instance.should_receive(:user_keys).and_return([{id: 1, key: 'abc'}])
+      expect(keychain.many?).to eq(false)
+    end
+
+    it 'handles a nonexistant username' do
+      Octokit::Client.any_instance.should_receive(:user_keys).and_raise(Octokit::NotFound)
+      expect(keychain.keys).to eq([])
+    end
   end
+
+
 end

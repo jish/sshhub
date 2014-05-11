@@ -16,10 +16,16 @@ module Sshhub
       keys.length
     end
 
+    def many?
+      length > 1
+    end
+
     private
 
     def api_data
       client.user_keys(username)
+    rescue Octokit::NotFound
+      []
     end
 
     def client

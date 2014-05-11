@@ -8,36 +8,62 @@ class SshhubCommand < Thor
   desc "authorize USERNAME", "Add keys from a github username to your authorized_keys file"
   def authorize(username)
     say "Requesting keys for #{username}...\n"
-    keychain = Sshhub::Keychain.new(username)
-    keys = keychain.length == 1 ? [keychain.keys.first] : key_selection(keychain.keys)
+    keys = selected_keys(username)
+    Sshhub::PortAuthority.authorize keys
+    say "Added #{key_statement(keys)} to authorized_keys"
+  end
 
-    keys.each{|key| Sshhub::PortAuthority.authorize(key) }
-    print_report(keys)
+  desc "status USERNAME", "Check the current authorization from a github username"
+  def status(username)
+    say "Requesting status for #{username}...\n"
+    keychain = Sshhub::Keychain.new(username)
+
+    say "\nFound #{key_statement(keychain.keys)} for #{username}\n"
+    keychain.keys.each do |key|
+      say key.abridged
+    end
+
+    if Sshhub::PortAuthority.present?(keychain.keys)
+      say "\n#{username} is authorized on this machine"
+    else
+      say "\nNo authorization found for #{username} on this machine"
+    end
+  end
+
+  desc "revoke USERNAME", "Removes any keys present in authorized_keys from a github username"
+  def revoke(username)
+    say "Revoking all authorization for #{username}...\n"
+    keychain = Sshhub::Keychain.new(username)
+    Sshhub::PortAuthority.revoke(keychain.keys)
   end
 
   private
 
-  def key_selection(keys)
-    say "#{keys.length} keys found:\n"
+  def selected_keys(username)
+    keychain = Sshhub::Keychain.new(username)
+    return [keychain.keys.first] unless keychain.many?
+
+    say "#{keychain.keys.length} keys found:\n"
     i = 0
-    keys.each do |key|
+    keychain.keys.each do |key|
       i += 1
       printf(" %-3s %5s\n" % ["#{i})", key.abridged])
     end
+
     printf(" %-3s %5s\n" % ['A)', 'Authorize all keys'])
     pos = ask("\nSelect a key to authorize:")
     return [] if pos == ''
 
-    pos.to_i.zero? ? keys : [keys[pos.to_i - 1]]
+    pos.to_i.zero? ? keychain.keys : [keychain.keys[pos.to_i - 1]]
   end
 
-  def print_report(keys)
-    if keys.length == 0
-      say "No keys authorized"
-    elsif keys.length == 1
-      say "Added #{keys.first.abridged} to authorized_keys"
+  def key_statement(keys)
+    if keys.length == 1
+      keys.first.abridged
+    elsif keys.empty?
+      "no keys"
     else
-      say "Added #{keys.length} keys to authorized_keys"
+      "#{keys.length} keys"
     end
   end
 end

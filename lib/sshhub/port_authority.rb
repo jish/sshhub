@@ -31,7 +31,7 @@ module Sshhub
     end
 
     def self.ssh_dir
-      "#{ENV['HOME']}/.ssh".freeze
+      @ssh_dir ||= "#{ENV['HOME']}/.ssh"
     end
   end
 end

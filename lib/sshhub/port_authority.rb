@@ -1,7 +1,7 @@
 module Sshhub
   class PortAuthority
     def self.authorize(keys)
-      system('mkdir', '-p', "/Users/#{whoami}/.ssh")
+      system('mkdir', '-p', ssh_dir)
 
       [*keys].each do |key|
         File.open(filename, 'a'){|f| f.write("#{key}\n") }
@@ -9,7 +9,7 @@ module Sshhub
     end
 
     def self.revoke(keys)
-      system('mkdir', '-p', "/Users/#{whoami}/.ssh")
+      system('mkdir', '-p', ssh_dir)
       revoked = authorized_keys - [*keys].map(&:key)
       File.open(filename, "w"){|f| f.puts revoked }
     end
@@ -27,11 +27,11 @@ module Sshhub
     end
 
     def self.filename
-      "/Users/#{whoami}/.ssh/authorized_keys"
+      "#{ssh_dir}/authorized_keys"
     end
 
-    def self.whoami
-      @whoami ||= `whoami`.rstrip
+    def self.ssh_dir
+      @ssh_dir ||= "#{ENV['HOME']}/.ssh"
     end
   end
 end
